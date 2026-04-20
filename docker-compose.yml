@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=tiktaktuk
+      - POSTGRES_USER=dery
+      - POSTGRES_PASSWORD=dery
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dery -d tiktaktuk"]
+      interval: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
