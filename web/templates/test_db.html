@@ -1,0 +1,8 @@
+<h1>Daftar User dari Neon</h1>
+<ul>
+    {% for u in users %}
+        <li>{{ u.username }} ({{ u.user_id }})</li>
+    {% empty %}
+        <li>Database masih kosong, Jar!</li>
+    {% endfor %}
+</ul>
