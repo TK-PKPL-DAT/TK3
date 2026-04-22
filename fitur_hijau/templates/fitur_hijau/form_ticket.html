@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ mode }} Kategori Tiket</title> <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-6">
+    <div class="max-w-md w-full bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100">
+        <h2 class="text-2xl font-black text-slate-800 mb-8">{{ mode }} Kategori</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Acara</label>
+                    <select name="event_id" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-blue-500 font-bold appearance-none">
+                        {% for ev in events %}
+                        <option value="{{ ev.0 }}" {% if ev.0 == selected_event_id %}selected{% endif %}>
+                            {{ ev.1 }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Nama Kategori</label>
+                    <input type="text" name="name" value="{{ data.0|default:'' }}" placeholder="cth: VVIP" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-blue-500 font-bold" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Harga (Rp)</label>
+                        <input type="number" name="price" value="{{ data.2|default:'' }}" placeholder="750000" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-blue-500 font-bold" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Kuota</label>
+                        <input type="number" name="quota" value="{{ data.1|default:'' }}" placeholder="100" class="w-full bg-slate-50 border-2 border-slate-100 p-4 rounded-2xl outline-none focus:border-blue-500 font-bold" required>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-5 rounded-2xl font-black mt-10 shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all uppercase tracking-widest">
+                {{ mode }} Kategori
+            </button>
+            <a href="{% url 'fitur_hijau:list_ticket' %}" class="block text-center mt-6 text-slate-300 font-bold text-xs uppercase tracking-widest hover:text-slate-500">Batal</a>
+        </form>
+    </div>
+</body>
+</html>

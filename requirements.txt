@@ -1,11 +1,2 @@
 django
-gunicorn
-whitenoise
 psycopg2-binary
-requests
-urllib3
-python-dotenv
-selenium
-pandas
-coverage
-Pillow
