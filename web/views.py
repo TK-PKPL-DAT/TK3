@@ -121,6 +121,23 @@ def register_form_view(request):
     return render(request, 'register_form.html', context)
 
 
+def verify_password(stored_password, input_password):
+    """
+    Verifikasi password yang support kedua jenis:
+    - Password yang sudah di-hash (SHA256)
+    - Password plain text (dari SQL manual)
+    """
+    password_hash = hashlib.sha256(input_password.encode()).hexdigest()
+    
+    # Cek apakah stored password adalah SHA256 hash (64 karakter)
+    if len(stored_password) == 64 and all(c in '0123456789abcdef' for c in stored_password.lower()):
+        # Password sudah di-hash, bandingkan dengan hash
+        return stored_password == password_hash
+    else:
+        # Password plain text, bandingkan langsung
+        return stored_password == input_password
+
+
 def login_view(request):
     """View untuk halaman login"""
     if request.method == 'POST':
@@ -130,22 +147,20 @@ def login_view(request):
             password = form.cleaned_data['password']
             
             try:
-                # Hash password untuk perbandingan
-                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                # Cari user berdasarkan username
+                user = UserAccount.objects.get(username=username)
                 
-                # Cari user
-                user = UserAccount.objects.get(
-                    username=username,
-                    password=password_hash
-                )
-                
-                # Set session
-                request.session['user_id'] = str(user.user_id)
-                request.session['username'] = user.username
-                request.session['logged_in'] = True
-                
-                messages.success(request, f'Login berhasil! Selamat datang, {username}')
-                return redirect('dashboard')
+                # Verifikasi password (support hash dan plain text)
+                if verify_password(user.password, password):
+                    # Set session
+                    request.session['user_id'] = str(user.user_id)
+                    request.session['username'] = user.username
+                    request.session['logged_in'] = True
+                    
+                    messages.success(request, f'Login berhasil! Selamat datang, {username}')
+                    return redirect('dashboard')
+                else:
+                    messages.error(request, 'Username atau password salah!')
                 
             except UserAccount.DoesNotExist:
                 messages.error(request, 'Username atau password salah!')
