@@ -97,6 +97,11 @@ def register_form_view(request):
                         user_id=user.user_id
                     )
                 
+                elif role == 'admin':
+                    # Admin hanya perlu UserAccount dan AccountRole
+                    # Tidak perlu record tambahan di tabel admin
+                    pass
+                
                 messages.success(request, f'Registrasi {info["title"]} berhasil! Silakan login.')
                 return redirect('login')
                 

@@ -224,7 +224,7 @@
             {% csrf_token %}
 
             {% for field in form %}
-                {% if field.name != 'password_confirm' %}
+                {% if field.name != 'password_confirm' and field.name != 'password' %}
                     <div class="form-group">
                         <label for="id_{{ field.name }}">{{ field.label }}</label>
                         {{ field }}
